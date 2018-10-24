@@ -54,7 +54,7 @@ const calculateVolumeCredits = (perf, play) => {
   return volumeCredits;
 };
 
-const functionName3 = (play, thisAmount, perf, format) => {
+const performanceInvoiceLine = (play, thisAmount, perf, format) => {
   return `  ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
 };
 
@@ -70,7 +70,7 @@ function statement(invoice, plays) {
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     const thisAmount = calculatePerformanceTotal(play, perf);
-    result += functionName3(play, thisAmount, perf, format);
+    result += performanceInvoiceLine(play, thisAmount, perf, format);
     totalAmount += thisAmount;
     volumeCredits += calculateVolumeCredits(perf, play);
   }
