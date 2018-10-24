@@ -46,7 +46,7 @@ const calculatePerformanceTotal = (play, perf) => {
   return performanceTotal;
 };
 
-const functionName2 = (perf, play) => {
+const calculateVolumeCredits = (perf, play) => {
 // add volume credits
   let volumeCredits = Math.max(perf.audience - 30, 0);
 // add extra credit for every ten comedy attendees
@@ -72,7 +72,7 @@ function statement(invoice, plays) {
     const thisAmount = calculatePerformanceTotal(play, perf);
     result += functionName3(play, thisAmount, perf, format);
     totalAmount += thisAmount;
-    volumeCredits += functionName2(perf, play);
+    volumeCredits += calculateVolumeCredits(perf, play);
   }
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
