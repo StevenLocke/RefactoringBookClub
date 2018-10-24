@@ -24,26 +24,26 @@ const plays = {
 };
 
 
-const calculateAmountBasedonPlayGenreAndAudience = (play, perf) => {
-  let x = 0;
+const calculatePerformanceTotal = (play, perf) => {
+  let performanceTotal = 0;
   switch (play.type) {
     case "tragedy":
-      x = 40000;
+      performanceTotal = 40000;
       if (perf.audience > 30) {
-        x += 1000 * (perf.audience - 30);
+        performanceTotal += 1000 * (perf.audience - 30);
       }
       break;
     case "comedy":
-      x = 30000;
+      performanceTotal = 30000;
       if (perf.audience > 20) {
-        x += 10000 + 500 * (perf.audience - 20);
+        performanceTotal += 10000 + 500 * (perf.audience - 20);
       }
-      x += 300 * perf.audience;
+      performanceTotal += 300 * perf.audience;
       break;
     default:
       throw new Error(`unknown type: ${play.type}`);
   }
-  return x;
+  return performanceTotal;
 };
 
 
@@ -64,7 +64,7 @@ function statement(invoice, plays) {
     const play = plays[perf.playID];
     let thisAmount = 0;
 
-    thisAmount = calculateAmountBasedonPlayGenreAndAudience(play, perf);
+    thisAmount = calculatePerformanceTotal(play, perf);
 
     // add volume credits
     volumeCredits += Math.max(perf.audience - 30, 0);
