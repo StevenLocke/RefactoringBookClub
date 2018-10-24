@@ -70,8 +70,8 @@ function generateStatement(invoice, plays) {
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     const thisAmount = calculatePerformanceTotal(play, perf);
-    statement += performanceInvoiceLine(play, thisAmount, perf);
     totalAmount += thisAmount;
+    statement += performanceInvoiceLine(play, thisAmount, perf);
     volumeCredits += calculateVolumeCredits(perf, play);
   }
   statement += `Amount owed is ${format(totalAmount / 100)}\n`;
