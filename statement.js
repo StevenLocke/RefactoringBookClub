@@ -47,13 +47,9 @@ const calculatePerformanceTotal = (play, perf) => {
 };
 
 
-const functionName1 = (perf, format, plays) => {
-  const play = plays[perf.playID];
-  const thisAmount = calculatePerformanceTotal(play, perf);
+const functionName1 = (perf, format, play) => {
   const volumeCredits = functionName2(perf, play);
-//print line for this order
-  const result = `  ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
-  return {result, totalAmount: thisAmount, volumeCredits};
+  return volumeCredits;
 }
 
 const functionName2 = (perf, play) => {
@@ -63,6 +59,10 @@ const functionName2 = (perf, play) => {
   if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
   return volumeCredits;
 }
+
+const functionName3 = (play, thisAmount, perf, format) => {
+  return `  ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+};
 
 function statement(invoice, plays) {
   let totalAmount = 0;
@@ -74,10 +74,11 @@ function statement(invoice, plays) {
       minimumFractionDigits: 2
     }).format;
   for (let perf of invoice.performances) {
-    const {result: newResult, totalAmount: newTotalAmount, volumeCredits: newVolumeCredits} = functionName1(perf, format, plays);
-    result += newResult;
-    totalAmount += newTotalAmount;
-    volumeCredits += newVolumeCredits;
+    const play = plays[perf.playID];
+    const thisAmount = calculatePerformanceTotal(play, perf);
+    result += functionName3(play, thisAmount, perf, format);
+    totalAmount += thisAmount;
+    volumeCredits += functionName1(perf, format, play);
   }
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
