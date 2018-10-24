@@ -24,6 +24,12 @@ const plays = {
 };
 
 
+const format = new Intl.NumberFormat("en-US",
+  {
+    style: "currency", currency: "USD",
+    minimumFractionDigits: 2
+  }).format;
+
 const calculatePerformanceTotal = (play, perf) => {
   let performanceTotal = 0;
   switch (play.type) {
@@ -47,42 +53,36 @@ const calculatePerformanceTotal = (play, perf) => {
 };
 
 const calculateVolumeCredits = (perf, play) => {
-// add volume credits
   let volumeCredits = Math.max(perf.audience - 30, 0);
 // add extra credit for every ten comedy attendees
   if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
   return volumeCredits;
 };
 
-const performanceInvoiceLine = (play, thisAmount, perf, format) => {
+const performanceInvoiceLine = (play, thisAmount, perf) => {
   return `  ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
 };
 
-function statement(invoice, plays) {
+function generateStatement(invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
-  let result = `Statement for ${invoice.customer}\n`;
-  const format = new Intl.NumberFormat("en-US",
-    {
-      style: "currency", currency: "USD",
-      minimumFractionDigits: 2
-    }).format;
+  let statement = `Statement for ${invoice.customer}\n`;
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     const thisAmount = calculatePerformanceTotal(play, perf);
-    result += performanceInvoiceLine(play, thisAmount, perf, format);
+    statement += performanceInvoiceLine(play, thisAmount, perf);
     totalAmount += thisAmount;
     volumeCredits += calculateVolumeCredits(perf, play);
   }
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
-  result += `You earned ${volumeCredits} credits\n`;
-  return result;
+  statement += `Amount owed is ${format(totalAmount / 100)}\n`;
+  statement += `You earned ${volumeCredits} credits\n`;
+  return statement;
 }
 
-document.getElementById("statement").innerText = statement(invoices, plays);
+document.getElementById("statement").innerText = generateStatement(invoices, plays);
 
 
-const output = statement(
+const output = generateStatement(
   {
     "customer": "BigCo",
     "performances": [
